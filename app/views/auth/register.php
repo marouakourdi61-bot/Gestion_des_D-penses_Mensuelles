@@ -97,7 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form action="" method="POST">
 
         <!-- CSRF -->
-        <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken(); ?>">
+         <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken(); ?>">
 
         <div class="mb-4">
             <label class="block text-gray-700 text-sm font-bold mb-2">Nom complet</label>

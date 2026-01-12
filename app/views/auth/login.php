@@ -1,64 +1,7 @@
+
 <?php
-require_once __DIR__ . '/../../../vendor/autoload.php';
-
 use Core\Security;
-use Core\Database;
-use App\Models\User;
-
-
-if (!isset($_SESSION)) session_start();
-
-// Si déjà connecté, rediriger vers le dashboard
-if (isset($_SESSION['user_id'])) {
-    header('Location: dashboard.php'); 
-    exit();
-}
-
-$error = '';
-$success = $_SESSION['register_success'] ?? '';
-unset($_SESSION['register_success']);
-
-
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
-        if (!Security::checkCSRFToken($_POST['csrf_token'] ?? '')) {
-            throw new Exception("Token CSRF invalide.");
-        }
-
-        $email = trim($_POST['email'] ?? '');
-        $password = $_POST['password'] ?? '';
-
-        if (empty($email) || empty($password)) {
-            throw new Exception("Tous les champs sont requis.");
-        }
-
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            throw new Exception("Email invalide.");
-        }
-
-        $db = Database::getInstance();
-        $userModel = new User($db);
-        $user = $userModel->findByEmail($email);
-
-        if (!$user || !password_verify($password, $user['password'])) {
-            throw new Exception("Email ou mot de passe incorrect.");
-        }
-
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_name'] = $user['name'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_role'] = $user['role'] ?? 'user'; 
-
-        
-        header('Location: dashboard.php');
-        exit();
-
-    } catch (Exception $e) {
-        $error = $e->getMessage();
-    }
-}
 ?>
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -93,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Formulaire -->
         <form action="" method="POST">
             <input type="hidden" name="csrf_token" value="<?= Security::generateCSRFToken() ?>">
-
+            <input type="text">
             <div class="mb-4">
                 <label class="block text-gray-700 text-sm font-bold mb-2">
                     <i class="fas fa-envelope mr-2"></i>Email
